@@ -1,21 +1,41 @@
-# Bazaar — E-commerce Site
+# Bazaar — Full-stack E-commerce
 
-Static, zero-dependency e-commerce site (HTML/CSS/JS). No build step.
+Live: https://bazaar-online-shop.vercel.app
+
+Frontend (HTML/CSS/JS SPA) + backend (Vercel serverless Node API) + PostgreSQL (Neon).
 
 ## Features
-- Product catalogue (18 products, 6 categories), search, category/price/stock filters, sorting
-- Product pages with quantity, wishlist, customer reviews, related products
-- Cart with quantity edit, coupons (SAVE10, WELCOME100, FREESHIP), Dhaka/outside delivery charge, free delivery over ৳3000
-- Checkout with validation (BD phone format), Cash on Delivery or bKash (TrxID)
-- Signup / login, My Orders, order cancel, order tracking by ID + phone
-- Admin panel: revenue stats, order status management, add/edit/delete products, stock control
-  - Admin login: admin@bazaar.com / admin123
+**Customers**
+- Browse, search, filter by category/price/stock, sort
+- Product pages with reviews & ratings, wishlist
+- Cart (prices, stock and coupons verified by the server)
+- Sign up / log in (scrypt-hashed passwords, JWT sessions), profile & saved address, change password
+- Checkout with 4 delivery methods (Inside Dhaka, Outside Dhaka, Same-day Express, Store pickup) and payment by Cash on Delivery or bKash (TrxID)
+- My Orders with progress tracker, cancel while Pending/Confirmed, public order tracking (order ID + phone)
 
-## Deploy to Vercel
-Option A (no install): go to https://vercel.com/new → "Deploy" → drag this folder (or push to GitHub and import).
-Option B (CLI):
-    npm i -g vercel
-    vercel --prod
+**Admin** (`#admin`)
+- Dashboard: revenue, last 24h, orders, pending, low stock, top sellers
+- Products: add / edit / delete, photo upload or image URL, stock, discount price, featured, hide/show
+- Orders: search & filter, full customer info (name, phone, email, address), items, change status with note (history timeline), mark bKash payment verified / paid / refunded. Cancelling returns stock.
+- Customers: all accounts with phone, address, order count, total spent, order history; grant/revoke admin
 
-Note: data is stored in each visitor's browser (localStorage). For a shared database across all users,
-connect a backend such as Supabase or Firebase.
+## Structure
+```
+index.html   – page shell + styles
+app.js       – frontend app
+api/index.js – all API routes (/api/*), auto-creates tables & seeds products on first run
+vercel.json  – routes /api/* to the function
+```
+
+## Environment variables (Vercel → Settings → Environment Variables)
+| Name | Purpose |
+|---|---|
+| `DATABASE_URL` | Postgres connection string (added automatically by the Neon integration) |
+| `ADMIN_EMAIL` + `ADMIN_PASSWORD` | Optional — pre-create an admin. If not set, the **first account registered becomes the admin** |
+| `JWT_SECRET` | Optional — session signing key (defaults to a key derived from `DATABASE_URL`) |
+
+## Run locally
+```
+npm install
+DATABASE_URL=postgres://... npx vercel dev
+```

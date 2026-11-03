@@ -1,0 +1,10 @@
+{
+  "name": "bazaar-shop",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Bazaar — full-stack e-commerce (Vercel serverless API + Postgres)",
+  "engines": { "node": ">=18" },
+  "dependencies": {
+    "pg": "^8.13.1"
+  }
+}
